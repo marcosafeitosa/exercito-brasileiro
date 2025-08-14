@@ -3,12 +3,12 @@ const rotas = [
   {
     url: "https://ofc.exbrhabbo.com/externos/e34ee431-8e67-456d-8216-fce1b8a9a60b/central",
     modulo: () => import("./central.js").then((m) => m.centralDeAcoes()),
-    aviso: "Extensão inicializada na Central de Ações.",
+    aviso: "Extensão inicializada.",
   },
   {
     url: "https://ofc.exbrhabbo.com/externos/e34ee431-8e67-456d-8216-fce1b8a9a60b",
     modulo: () => import("./monitores.js").then((m) => m.exibirMenuMonitores()),
-    aviso: "Extensão inicializada na Lista de Monitores.",
+    aviso: "Extensão inicializada.",
   },
 ];
 
@@ -57,7 +57,7 @@ function mostrarAvisoSuspenso(texto) {
   Object.assign(aviso.style, {
     backgroundColor: "#215e35",
     color: "#fff",
-    padding: "12px 18px",
+    padding: "6px 18px",
     borderRadius: "5px",
     fontSize: "15px",
     boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
