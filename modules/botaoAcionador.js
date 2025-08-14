@@ -38,7 +38,7 @@ function mostrarAvisoSuspenso(texto) {
     container.id = "aviso-suspenso-container";
     Object.assign(container.style, {
       position: "fixed",
-      top: "20px",
+      bottom: "20px",
       right: "20px",
       zIndex: 9999,
       display: "flex",
@@ -55,7 +55,7 @@ function mostrarAvisoSuspenso(texto) {
   const aviso = document.createElement("div");
   aviso.textContent = texto;
   Object.assign(aviso.style, {
-    backgroundColor: "rgb(22, 22, 22)",
+    backgroundColor: "rgb(110, 29, 29)",
     border: "solid 1px rgb(31, 31, 31)",
     color: "#fff",
     padding: "3px 18px",
