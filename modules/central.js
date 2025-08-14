@@ -20,8 +20,8 @@ export async function centralDeAcoes() {
     if (!target) return;
 
     const buttonX = document.querySelector("#radix-\\:r6\\: > button > svg");
-    buttonX.style.position = "fixed";
-    buttonX.style.right = "328px";
+    buttonX.style.position = "absolute";
+    buttonX.style.right = "-35px";
 
     // Pega o nick relativo ao botão clicado
     NickMonitor(target);
