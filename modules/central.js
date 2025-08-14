@@ -19,10 +19,10 @@ export async function centralDeAcoes() {
 
     if (!target) return;
 
-    // Seleciona o container relativo ao botão clicado
-    const container = document.querySelector("div[id^='radix-']");
+    // Seleciona o container do radix relativo ao botão clicado
+    const container = target.closest("div[id^='radix-']");
     if (!container) {
-      console.warn("Container não encontrado para o botão clicado.");
+      console.warn("Container do radix não encontrado para o botão clicado.");
       return;
     }
     container.style.overflowY = "hidden";
@@ -47,7 +47,7 @@ export async function centralDeAcoes() {
     }
 
     // --- informacoes-relatorios como filho normal ---
-    let informacoesRelatorios = document.querySelector(
+    let informacoesRelatorios = container.querySelector(
       "#informacoes-relatorios"
     );
     if (!informacoesRelatorios) {
@@ -71,7 +71,7 @@ export async function centralDeAcoes() {
     informacoesRelatorios.appendChild(novaDiv);
 
     // --- relatoriosAceitos flutuando no canto direito ---
-    let relatoriosAceitos = document.querySelector("#relatoriosAceitos");
+    let relatoriosAceitos = container.querySelector("#relatoriosAceitos");
     if (!relatoriosAceitos) {
       relatoriosAceitos = document.createElement("div");
       relatoriosAceitos.id = "relatoriosAceitos";
@@ -95,8 +95,6 @@ export async function centralDeAcoes() {
         }
       `;
       document.head.appendChild(styleTag);
-    } else if (!relatoriosAceitos.isConnected) {
-      container.appendChild(relatoriosAceitos);
     }
 
     if (relatoriosAceitos.parentElement !== container) {
