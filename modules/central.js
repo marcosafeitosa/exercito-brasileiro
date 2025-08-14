@@ -26,7 +26,10 @@ export async function centralDeAcoes() {
     // Pega o nick relativo ao botão clicado
     NickMonitor(target);
 
-    const container = document.querySelector("#radix-\\:r6\\:");
+    // Seleciona qualquer elemento cujo id comece com "radix-"
+    const container = document.querySelector("div[id^='radix-']");
+
+    container.style.overflorY = "hidden";
     if (!container) {
       console.warn("Elemento '#radix-\\:r6\\:' não encontrado.");
       return;
