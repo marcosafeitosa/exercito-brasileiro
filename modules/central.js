@@ -19,20 +19,21 @@ export async function centralDeAcoes() {
 
     if (!target) return;
 
-    const buttonX = document.querySelector("#radix-\\:r6\\: > button > svg");
-    buttonX.style.position = "absolute";
-    buttonX.style.right = "-35px";
-
-    // Pega o nick relativo ao botão clicado
-    NickMonitor(target);
-
-    // Seleciona qualquer elemento cujo id comece com "radix-"
-    const container = document.querySelector("div[id^='radix-']");
-
-    container.style.overflorY = "hidden";
+    // Seleciona o container relativo ao botão clicado
+    const container = target.closest("div[id^='radix-']");
     if (!container) {
-      console.warn("Elemento '#radix-\\:r6\\:' não encontrado.");
+      console.warn("Container não encontrado para o botão clicado.");
       return;
+    }
+    container.style.overflowY = "hidden";
+
+    // Seleciona o SVG dentro do botão do container
+    const buttonX = container.querySelector("button > svg");
+    if (buttonX) {
+      buttonX.style.position = "absolute";
+      buttonX.style.right = "-35px";
+    } else {
+      console.log("Botão SVG não encontrado dentro do container");
     }
 
     // Evita duplicação
@@ -63,8 +64,8 @@ export async function centralDeAcoes() {
 
     // Cria nova div dentro de informacoes-relatorios
     const novaDiv = document.createElement("div");
-    const textArea = document.querySelector("#radix-\\:r6\\: > textarea");
-    textArea.style.width = "unset";
+    const textArea = container.querySelector("textarea");
+    if (textArea) textArea.style.width = "unset";
     novaDiv.style.width = "100%";
     novaDiv.style.height = "200px";
     informacoesRelatorios.appendChild(novaDiv);
@@ -74,40 +75,30 @@ export async function centralDeAcoes() {
     if (!relatoriosAceitos) {
       relatoriosAceitos = document.createElement("div");
       relatoriosAceitos.id = "relatoriosAceitos";
-      // relatoriosAceitos.style.backgroundColor = "#2222";
       relatoriosAceitos.style.width = "35%";
       relatoriosAceitos.style.height = "438.9px";
       relatoriosAceitos.style.position = "absolute";
       relatoriosAceitos.style.top = "0";
       relatoriosAceitos.style.right = "0";
-      relatoriosAceitos.style.overflowY = "auto";
-      relatoriosAceitos.style.overflowY = "scroll"; // ou "auto"
+      relatoriosAceitos.style.overflowY = "scroll";
       relatoriosAceitos.style.scrollbarWidth = "none"; // Firefox
       relatoriosAceitos.style.msOverflowStyle = "none"; // IE 10+
-
-      // Para o ::-webkit-scrollbar, precisa adicionar via CSS, pois não tem suporte via style JS.
-      // Então adiciona uma regra CSS no seu arquivo ou via JS assim:
-      const style = document.createElement("style");
-      style.textContent = `
-  #relatoriosAceitos::-webkit-scrollbar {
-    display: none;
-  }
-`;
-      document.head.appendChild(style);
-
-      relatoriosAceitos.style.textContent = `
-  #relatoriosAceitos::-webkit-scrollbar {
-    display: none;
-  }
-`;
       relatoriosAceitos.style.padding = "10px";
       relatoriosAceitos.style.boxSizing = "border-box";
       relatoriosAceitos.style.zIndex = "9999";
       relatoriosAceitos.innerHTML = `<p style="font-size: 14px; font-weight: 400; text-align: center;">Ações aceitas</p>`;
+
+      const styleTag = document.createElement("style");
+      styleTag.textContent = `
+        #relatoriosAceitos::-webkit-scrollbar {
+          display: none;
+        }
+      `;
+      document.head.appendChild(styleTag);
     } else if (!relatoriosAceitos.isConnected) {
       container.appendChild(relatoriosAceitos);
     }
-    // Se ainda não estiver no container, anexa
+
     if (relatoriosAceitos.parentElement !== container) {
       container.appendChild(relatoriosAceitos);
     }
@@ -117,7 +108,7 @@ export async function centralDeAcoes() {
       (el) => el !== informacoesRelatorios && el !== relatoriosAceitos
     );
     filhosOriginais.forEach((el) => {
-      el.style.marginRight = "38%"; // espaço para o relatoriosAceitos flutuante
+      el.style.marginRight = "38%";
     });
 
     // Estilização container
@@ -127,6 +118,9 @@ export async function centralDeAcoes() {
 
     const p = container.querySelector("p");
     if (p) p.style.setProperty("font-size", "15px");
+
+    // Pega o nick relativo ao botão clicado
+    NickMonitor(target);
   });
 }
 
