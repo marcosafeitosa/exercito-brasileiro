@@ -20,7 +20,7 @@ export async function centralDeAcoes() {
     if (!target) return;
 
     // Seleciona o container relativo ao botão clicado
-    const container = target.closest("div[id^='radix-']");
+    const container = document.querySelector("div[id^='radix-']");
     if (!container) {
       console.warn("Container não encontrado para o botão clicado.");
       return;
