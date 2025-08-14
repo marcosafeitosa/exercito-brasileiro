@@ -19,10 +19,15 @@ export async function centralDeAcoes() {
 
     if (!target) return;
 
-    // Seleciona o container do radix relativo ao botão clicado
-    const container = target.closest("div[id^='radix-']");
+    // Seleciona a div de overlay (fundo escuro)
+    const overlay = document.querySelector(
+      "body > div.fixed.inset-0.z-50.bg-black\\/80[data-state='open']"
+    );
+
+    // Pega o próximo irmão (a modal)
+    const container = overlay?.nextElementSibling;
     if (!container) {
-      console.warn("Container do radix não encontrado para o botão clicado.");
+      console.warn("Container da modal não encontrado.");
       return;
     }
     container.style.overflowY = "hidden";
@@ -47,14 +52,14 @@ export async function centralDeAcoes() {
     }
 
     // --- informacoes-relatorios como filho normal ---
-    let informacoesRelatorios = container.querySelector(
+    let informacoesRelatorios = document.querySelector(
       "#informacoes-relatorios"
     );
     if (!informacoesRelatorios) {
       informacoesRelatorios = document.createElement("div");
       informacoesRelatorios.id = "informacoes-relatorios";
       informacoesRelatorios.style.width = "62%";
-      informacoesRelatorios.style.overflowY = "scroll"; // ou "auto"
+      informacoesRelatorios.style.overflowY = "scroll";
       informacoesRelatorios.style.scrollbarWidth = "none"; // Firefox
       informacoesRelatorios.style.msOverflowStyle = "none"; // IE 10+
       informacoesRelatorios.style.height = "232px";
@@ -71,7 +76,7 @@ export async function centralDeAcoes() {
     informacoesRelatorios.appendChild(novaDiv);
 
     // --- relatoriosAceitos flutuando no canto direito ---
-    let relatoriosAceitos = container.querySelector("#relatoriosAceitos");
+    let relatoriosAceitos = document.querySelector("#relatoriosAceitos");
     if (!relatoriosAceitos) {
       relatoriosAceitos = document.createElement("div");
       relatoriosAceitos.id = "relatoriosAceitos";
@@ -95,6 +100,8 @@ export async function centralDeAcoes() {
         }
       `;
       document.head.appendChild(styleTag);
+    } else if (!relatoriosAceitos.isConnected) {
+      container.appendChild(relatoriosAceitos);
     }
 
     if (relatoriosAceitos.parentElement !== container) {
