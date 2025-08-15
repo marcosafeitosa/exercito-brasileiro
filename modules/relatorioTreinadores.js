@@ -2,7 +2,7 @@ const API_URL =
   "https://supabase.exbrhabbo.com/rest/v1/enrollments?select=*%2Crole%3Aroles%28id%2Cname%2Ctype%29%2Cinitials%3Ainitials%28id%2Cname%29%2Ccompany%3Acompanies%28id%2Cname%29%2Cstatus%3Astatus%28id%2Cname%29%2Cbranch%3Abranches%28id%2Cname%29%2Cpromoted_by%28*%29%2Clecture%3Alectures%28id%2Cname%29&nickname=ilike.%25";
 
 const REPORTS =
-  "https://supabase.exbrhabbo.com/rest/v1/reports?select=*%2Chandler%28id%2Cnickname%2Crole%3Aroles%28id%2Cname%29%29%2Csecondary%28id%2Cnickname%2Crole%3Aroles%28id%2Cname%29%29%2Cresponsible%28id%2Cnickname%2Crole%3Aroles%28id%2Cname%29%29%2Cbranch%3Abranches%28*%29%2Ctype%3Areport_types%28*%29%2Caccepted_by%28id%2Cnickname%2Crole%3Aroles%28id%2Cname%29%29&order=created_at.desc&offset=25&limit=25&branch=eq.895039c4-2473-494c-b293-5506e1d8152c&handler=eq.";
+  "https://supabase.exbrhabbo.com/rest/v1/reports?select=*%2Chandler%28id%2Cnickname%2Crole%3Aroles%28id%2Cname%29%29%2Csecondary%28id%2Cnickname%2Crole%3Aroles%28id%2Cname%29%29%2Cresponsible%28id%2Cnickname%2Crole%3Aroles%28id%2Cname%29%29%2Cbranch%3Abranches%28*%29%2Ctype%3Areport_types%28*%29%2Caccepted_by%28id%2Cnickname%2Crole%3Aroles%28id%2Cname%29%29&order=created_at.desc&offset=25&limit=0&branch=eq.895039c4-2473-494c-b293-5506e1d8152c&handler=eq.";
 
 const API_KEY =
   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTcyODc0Njc2MCwiZXhwIjo0ODg0NDIwMzYwLCJyb2xlIjoiYW5vbiJ9.PfUXWWBShhau-OE27c8GbPuIP8p3afvItzxi0Xpel0E";
