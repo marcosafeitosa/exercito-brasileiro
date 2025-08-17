@@ -27,6 +27,9 @@ export function verificarERodarModulo() {
     console.log("✅ Rota encontrada:", rota.url);
     if (rota.aviso) {
       mostrarAvisoSuspenso(rota.aviso);
+      statusDaExtensao
+        .then((module) => module.criarNotificacao())
+        .catch(console.error);
     }
   } else {
     console.log("⚠ Nenhum módulo configurado para esta URL:", urlAtual);
@@ -36,10 +39,6 @@ export function verificarERodarModulo() {
 function mostrarAvisoSuspenso(texto) {
   let container = document.querySelector("#aviso-suspenso-container");
   if (!container) {
-    statusDaExtensao
-      .then((module) => module.criarNotificacao())
-      .catch(console.error);
-
     container = document.createElement("div");
     container.id = "aviso-suspenso-container";
     Object.assign(container.style, {
