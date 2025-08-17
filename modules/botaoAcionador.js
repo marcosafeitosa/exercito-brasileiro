@@ -59,17 +59,28 @@ function mostrarAvisoSuspenso(texto) {
 
   const aviso = document.createElement("div");
   aviso.textContent = texto;
-  Object.assign(aviso.style, {
-    backgroundColor: "rgb(110, 29, 29)",
-    border: "solid 1px rgb(31, 31, 31)",
-    color: "#fff",
-    padding: "3px 18px",
-    borderRadius: "5px",
-    fontSize: "15px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-    opacity: "0",
-    transition: "opacity 0.3s ease",
-  });
+  div.style.position = "fixed";
+  div.style.padding = "12px 18px";
+  div.style.background = "rgba(20,20,20,0.95)";
+  div.style.color = "white";
+  div.style.borderRadius = "12px";
+  div.style.fontFamily = "Arial, sans-serif";
+  div.style.fontSize = "14px";
+  div.style.boxShadow = "0 4px 12px rgba(0,0,0,0.5)";
+  div.style.zIndex = "99999";
+  div.style.opacity = "0";
+  div.style.transition = "opacity 0.5s ease";
+  // Object.assign(aviso.style, {
+  //   backgroundColor: "rgb(110, 29, 29)",
+  //   border: "solid 1px rgb(31, 31, 31)",
+  //   color: "#fff",
+  //   padding: "3px 18px",
+  //   borderRadius: "5px",
+  //   fontSize: "15px",
+  //   boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+  //   opacity: "0",
+  //   transition: "opacity 0.3s ease",
+  // });
 
   container.appendChild(aviso);
 
