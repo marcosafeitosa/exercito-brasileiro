@@ -39,6 +39,7 @@ export function criarNotificacao() {
   div.style.transition = "opacity 0.5s ease";
 
   document.body.appendChild(div);
+  console.log("Aviso da extensão.");
 
   // Efeito de fade-in
   setTimeout(() => {
