@@ -1,3 +1,22 @@
+// Função para detectar se o Cloudflare ainda está verificando
+function isCloudflareChecking() {
+  return (
+    document.body.classList.contains("cf-challenge") ||
+    document.querySelector("#challenge-body-text") !== null ||
+    document.querySelector("div[id^='cf-']") !== null
+  );
+}
+
+// Espera até o Cloudflare liberar a página
+function waitForCloudflareClear(callback) {
+  const interval = setInterval(() => {
+    if (!isCloudflareChecking()) {
+      clearInterval(interval);
+      callback();
+    }
+  }, 500); // checa a cada 0,5s
+}
+
 // Atalho de teclado: Ctrl+Shift+E
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.shiftKey && e.code === "KeyE") {
@@ -13,7 +32,9 @@ document.addEventListener("keydown", (e) => {
 
 // Menu do Tampermonkey
 if (typeof GM_registerMenuCommand !== "undefined") {
-  GM_registerMenuCommand("Mostrar Toast EXBR", mostrarToastInstrucao);
+  GM_registerMenuCommand("Mostrar Toast EXBR", () => {
+    waitForCloudflareClear(mostrarToastInstrucao);
+  });
 }
 
 // === Toast flutuante (versão estilizada) ===
@@ -153,9 +174,11 @@ function mostrarToastInstrucao() {
   }
 }
 
-// Mostrar toast no carregamento inicial
+// Mostrar toast no carregamento inicial, mas só depois do Cloudflare
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", mostrarToastInstrucao);
+  document.addEventListener("DOMContentLoaded", () => {
+    waitForCloudflareClear(mostrarToastInstrucao);
+  });
 } else {
-  mostrarToastInstrucao();
+  waitForCloudflareClear(mostrarToastInstrucao);
 }
