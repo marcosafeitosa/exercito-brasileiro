@@ -2,14 +2,7 @@ let dataAtualSelecionada = null;
 let observerLupas = null;
 let divFlutuante = null;
 let lupasJaAtivadas = localStorage.getItem("lupasAtivadas") === "true";
-import {
-  BUSCAR_NICKNAME,
-  DADOS_MONITORES,
-  API_KEY,
-  AUTH_TOKEN,
-  API_KEY,
-  AUTH_TOKEN,
-} from "./utils";
+import { BUSCAR_NICKNAME, DADOS_MONITORES, API_KEY, AUTH_TOKEN } from "./utils";
 
 // const API_URL = BUSCAR_NICKNAME;
 // const REPORTS_URL = DADOS_MONITORES;
