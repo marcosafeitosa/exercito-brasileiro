@@ -1,3 +1,5 @@
+const statusDaExtensao = import("./statusExtensao.js");
+
 const rotas = [
   // Rota mais específica primeiro
   {
@@ -34,6 +36,10 @@ export function verificarERodarModulo() {
 function mostrarAvisoSuspenso(texto) {
   let container = document.querySelector("#aviso-suspenso-container");
   if (!container) {
+    statusDaExtensao
+      .then((module) => module.criarNotificacao())
+      .catch(console.error);
+
     container = document.createElement("div");
     container.id = "aviso-suspenso-container";
     Object.assign(container.style, {
