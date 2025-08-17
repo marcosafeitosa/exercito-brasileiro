@@ -51,7 +51,7 @@ function mostrarToastInstrucao() {
 
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="font-size:18px;">⚡</span>
-        <span><strong>Pressione o atalho para injetar o script:</strong><br> Pressione <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>E</kbd></span>
+        <span><strong>Atalho para injetar o script:</strong><br> Pressione <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>E</kbd></span>
       </div>
     `;
 
