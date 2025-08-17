@@ -59,7 +59,6 @@ function mostrarAvisoSuspenso(texto) {
 
   const aviso = document.createElement("div");
   aviso.textContent = texto;
-  aviso.style.position = "fixed";
   aviso.style.padding = "12px 18px";
   aviso.style.background = "rgba(20,20,20,0.95)";
   aviso.style.color = "white";
