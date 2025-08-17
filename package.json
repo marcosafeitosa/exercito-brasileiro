@@ -1,6 +1,6 @@
 {
   "name": "funcionalidades-exbr",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "background.js",
   "scripts": {
@@ -8,16 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marcosafeitosa/funcionalidades-exbr.git"
+    "url": "git+https://github.com/marcosafeitosa/exercito-brasileiro.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/marcosafeitosa/funcionalidades-exbr/issues"
+    "url": "https://github.com/marcosafeitosa/exercito-brasileiro.git/issues"
   },
-  "homepage": "https://github.com/marcosafeitosa/funcionalidades-exbr#readme",
+  "homepage": "https://github.com/marcosafeitosa/exercito-brasileiro.git#readme",
   "devDependencies": {
     "esbuild": "^0.25.9"
   }
