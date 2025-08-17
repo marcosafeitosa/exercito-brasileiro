@@ -59,17 +59,17 @@ function mostrarAvisoSuspenso(texto) {
 
   const aviso = document.createElement("div");
   aviso.textContent = texto;
-  div.style.position = "fixed";
-  div.style.padding = "12px 18px";
-  div.style.background = "rgba(20,20,20,0.95)";
-  div.style.color = "white";
-  div.style.borderRadius = "12px";
-  div.style.fontFamily = "Arial, sans-serif";
-  div.style.fontSize = "14px";
-  div.style.boxShadow = "0 4px 12px rgba(0,0,0,0.5)";
-  div.style.zIndex = "99999";
-  div.style.opacity = "0";
-  div.style.transition = "opacity 0.5s ease";
+  aviso.style.position = "fixed";
+  aviso.style.padding = "12px 18px";
+  aviso.style.background = "rgba(20,20,20,0.95)";
+  aviso.style.color = "white";
+  aviso.style.borderRadius = "12px";
+  aviso.style.fontFamily = "Arial, sans-serif";
+  aviso.style.fontSize = "14px";
+  aviso.style.boxShadow = "0 4px 12px rgba(0,0,0,0.5)";
+  aviso.style.zIndex = "99999";
+  aviso.style.opacity = "0";
+  aviso.style.transition = "opacity 0.5s ease";
   // Object.assign(aviso.style, {
   //   backgroundColor: "rgb(110, 29, 29)",
   //   border: "solid 1px rgb(31, 31, 31)",
