@@ -1,9 +1,12 @@
-// Função para detectar se o Cloudflare ainda está verificando
+// === Detectar se Cloudflare está verificando ===
 function isCloudflareChecking() {
   return (
-    document.body.classList.contains("cf-challenge") ||
-    document.querySelector("#challenge-body-text") !== null ||
-    document.querySelector("div[id^='cf-']") !== null
+    document.querySelector("#cf-chl-widget-jqy2i_response") !== null ||
+    document.querySelector("#challenge-success-text") !== null ||
+    document.body.innerText.includes("Confirme que você é humano") ||
+    document.body.innerText.includes(
+      "precisa revisar a segurança da sua conexão"
+    )
   );
 }
 
@@ -17,20 +20,22 @@ function waitForCloudflareClear(callback) {
   }, 500); // checa a cada 0,5s
 }
 
-// Atalho de teclado: Ctrl+Shift+E
+// === Atalho de teclado: Ctrl+Shift+E ===
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.shiftKey && e.code === "KeyE") {
     e.preventDefault();
     console.log("Atalho acionado!");
-    import("./modules/botaoAcionador.js")
-      .then((module) => module.verificarERodarModulo())
-      .catch((err) => {
-        console.error("Falha ao carregar módulo:", err);
-      });
+    waitForCloudflareClear(() => {
+      import("./modules/botaoAcionador.js")
+        .then((module) => module.verificarERodarModulo())
+        .catch((err) => {
+          console.error("Falha ao carregar módulo:", err);
+        });
+    });
   }
 });
 
-// Menu do Tampermonkey
+// === Menu do Tampermonkey ===
 if (typeof GM_registerMenuCommand !== "undefined") {
   GM_registerMenuCommand("Mostrar Toast EXBR", () => {
     waitForCloudflareClear(mostrarToastInstrucao);
