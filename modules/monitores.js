@@ -4,11 +4,6 @@ let divFlutuante = null;
 let lupasJaAtivadas = localStorage.getItem("lupasAtivadas") === "true";
 import { BUSCAR_NICKNAME, DADOS_MONITORES, API_KEY, AUTH_TOKEN } from "./utils";
 
-// const API_URL = BUSCAR_NICKNAME;
-// const REPORTS_URL = DADOS_MONITORES;
-// const API_KEY = API_KEY;
-// const AUTH_TOKEN = AUTH_TOKEN;
-
 export async function exibirMenuMonitores() {
   console.log("Lista de membros.");
   const container = document.querySelector(
@@ -137,6 +132,7 @@ function removerTodasLupas() {
     .querySelectorAll("td.td-lupa-monitores")
     .forEach((td) => td.remove());
 }
+console.log("TESTE");
 
 function criarOuAtualizarDivFlutuante(htmlConteudo) {
   if (!divFlutuante) {
@@ -161,34 +157,45 @@ function criarOuAtualizarDivFlutuante(htmlConteudo) {
       flexDirection: "row",
       gap: "20px",
       flexWrap: "wrap",
+      position: "fixed",
     });
+
+    // botão fechar
+    const botaoFechar = document.createElement("button");
+    botaoFechar.id = "fechar-div-flutuante";
+    botaoFechar.textContent = "×";
+    Object.assign(botaoFechar.style, {
+      position: "absolute",
+      top: "8px",
+      right: "16px",
+      background: "transparent",
+      border: "none",
+      color: "white",
+      fontSize: "24px",
+      cursor: "pointer",
+      fontWeight: "bold",
+      lineHeight: "1",
+    });
+    botaoFechar.onclick = () => {
+      divFlutuante.style.display = "none";
+    };
+
+    divFlutuante.appendChild(botaoFechar);
+
+    // container só para o conteúdo dinâmico
+    const conteudoDiv = document.createElement("div");
+    conteudoDiv.id = "conteudo-flutuante";
+    conteudoDiv.style.width = "100%";
+    conteudoDiv.style.display = "flex";
+    conteudoDiv.style.gap = "30px";
+    divFlutuante.appendChild(conteudoDiv);
 
     document.body.appendChild(divFlutuante);
   }
 
-  divFlutuante.innerHTML = "";
-
-  const botaoFechar = document.createElement("button");
-  botaoFechar.id = "fechar-div-flutuante";
-  botaoFechar.textContent = "×";
-  Object.assign(botaoFechar.style, {
-    position: "absolute",
-    top: "8px",
-    right: "16px",
-    background: "transparent",
-    border: "none",
-    color: "white",
-    fontSize: "24px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    lineHeight: "1",
-  });
-  botaoFechar.onclick = () => {
-    divFlutuante.style.display = "none";
-  };
-
-  divFlutuante.appendChild(botaoFechar);
-  divFlutuante.innerHTML += htmlConteudo;
+  // atualiza apenas o container do conteúdo
+  const conteudoDiv = divFlutuante.querySelector("#conteudo-flutuante");
+  conteudoDiv.innerHTML = htmlConteudo;
 
   divFlutuante.style.display = "flex";
 }
