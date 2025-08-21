@@ -34,9 +34,9 @@ document.addEventListener("keydown", (e) => {
         .catch((err) => {
           console.error("Falha ao carregar módulo:", err);
         });
-      numeroMonitores
-        .then((module) => module.inserirBadgeNavegacao())
-        .catch(console.error);
+      // numeroMonitores
+      //   .then((module) => module.inserirBadgeNavegacao())
+      //   .catch(console.error);
     });
   }
 });
@@ -110,7 +110,9 @@ function mostrarToastInstrucao() {
 
   const existing = document.getElementById("exbr-toast");
   if (existing) existing.remove();
-
+  numeroMonitores
+    .then((module) => module.inserirBadgeNavegacao())
+    .catch(console.error);
   const div = document.createElement("div");
   div.id = "exbr-toast";
   div.innerHTML = `

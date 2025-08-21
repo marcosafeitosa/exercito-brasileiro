@@ -52,7 +52,7 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
         target.appendChild(badge);
       } else {
         badge.textContent = displayValor;
-        badge.style.right = valor > 9 ? "10px" : "19px";
+        badge.style.right = valor > 9 ? "10px" : "18px";
       }
     } catch (err) {
       console.error("Erro ao buscar dados:", err);
