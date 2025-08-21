@@ -90,7 +90,7 @@ async function buscarRelatoriosPorTreinadorId(treinadorId) {
                 relatorio.responsible?.nickname || "Desconhecido"
               }</span>
               <span class="text-sm text-muted-foreground">Treinador: ${
-                relatorio.secondary?.nickname || "Desconhecido"
+                relatorio.handler?.nickname || "Desconhecido"
               }</span>
             </p>
           </div>
@@ -136,6 +136,9 @@ async function buscarRelatoriosPorTreinadorId(treinadorId) {
 
           <p class="text-sm text-muted-foreground">Aprovados: ${
             relatorio.approveds?.join(", ") || "N/A"
+          }</p>
+          <p style="color:#ef4444;" class="text-sm text-muted-foreground">${
+            relatorio.error_message || ""
           }</p>
         </div>
       `;
