@@ -19,7 +19,7 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
     // Lógica de exibição
     badge.textContent = valorBadge > 100 ? "99+" : valorBadge;
 
-    const rightPos = valorBadge > 9 ? "10px" : "19px";
+    const rightPos = valorBadge > 9 ? "11px" : "12px";
 
     Object.assign(badge.style, {
       color: "white",
