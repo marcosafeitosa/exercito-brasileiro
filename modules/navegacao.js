@@ -11,14 +11,12 @@ const HEADERS = {
 };
 
 export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
-  // intervalo em ms
+  // Criação do badge
   function criarBadge(valorBadge) {
     const badge = document.createElement("span");
     badge.id = "exbr-badge";
 
-    // Lógica de exibição
     badge.textContent = valorBadge > 100 ? "99+" : valorBadge;
-
     const rightPos = valorBadge > 9 ? "11px" : "12px";
 
     Object.assign(badge.style, {
@@ -30,11 +28,59 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
     return badge;
   }
 
+  // Tooltip suspenso no body
+  function adicionarTooltip() {
+    const target = document.querySelector(
+      "#radix-\\:R1cumkq\\: > nav > ul > li:nth-child(4) > div.hidden.lg\\:block"
+    );
+    if (!target) return;
+
+    let tooltip = document.getElementById("exbr-tooltip");
+    if (!tooltip) {
+      tooltip = document.createElement("div");
+      tooltip.id = "exbr-tooltip";
+
+      Object.assign(tooltip.style, {
+        width: "189.492px",
+        position: "fixed",
+        padding: "4px 8px",
+        backgroundColor: " #080809",
+        color: "#fff",
+        border: "solid 1px rgb(39, 39, 39)",
+        fontSize: "12px",
+        borderRadius: "3px",
+        opacity: "0",
+        pointerEvents: "none",
+        transition: "opacity 0.2s ease",
+        whiteSpace: "nowrap",
+        zIndex: "10000",
+      });
+
+      document.body.appendChild(tooltip);
+
+      target.addEventListener("mouseenter", () => {
+        const badge = document.getElementById("exbr-badge");
+        const valor = badge ? badge.textContent : "0";
+        tooltip.textContent = `Ações na Central: ${valor}`;
+
+        // Posiciona tooltip em relação ao target
+        const rect = target.getBoundingClientRect();
+        tooltip.style.top = `${rect.top - 30}px`;
+        tooltip.style.left = `${rect.right + 0}px`;
+        tooltip.style.opacity = "1";
+      });
+
+      target.addEventListener("mouseleave", () => {
+        tooltip.style.opacity = "0";
+      });
+    }
+  }
+
+  // Atualiza badge
   async function atualizarBadge() {
     const target = document.querySelector(
       "#radix-\\:R1cumkq\\: > nav > ul > li:nth-child(4) > div.hidden.lg\\:block"
     );
-
     if (!target) return;
 
     target.style.display = "flex";
@@ -54,12 +100,17 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
         badge.textContent = displayValor;
         badge.style.right = valor > 9 ? "10px" : "18px";
       }
+
+      // Chama o tooltip
+      setTimeout(() => {
+        adicionarTooltip();
+      }, 600);
     } catch (err) {
       console.error("Erro ao buscar dados:", err);
     }
   }
 
-  // Observa quando o botão de ancoragem estiver disponível
+  // Observa botão de ancoragem
   const anchorSelector =
     "body > div > section > div > div.flex.items-center.gap-4 > button.inline-flex.items-center.justify-center.whitespace-nowrap.font-medium.transition-colors.focus-visible\\:outline-none.focus-visible\\:ring-1.focus-visible\\:ring-ring.disabled\\:pointer-events-none.disabled\\:opacity-50.border.border-input.bg-background.shadow-sm.hover\\:bg-accent.hover\\:text-accent-foreground.h-8.rounded-md.px-3.text-xs";
 
