@@ -1,4 +1,7 @@
 // === Detectar se Cloudflare está verificando ===
+
+const numeroMonitores = import("./modules/navegacao.js");
+
 function isCloudflareChecking() {
   return (
     document.querySelector("#cf-chl-widget-jqy2i_response") !== null ||
@@ -31,6 +34,9 @@ document.addEventListener("keydown", (e) => {
         .catch((err) => {
           console.error("Falha ao carregar módulo:", err);
         });
+      numeroMonitores
+        .then((module) => module.inserirBadgeNavegacao())
+        .catch(console.error);
     });
   }
 });
@@ -42,8 +48,66 @@ if (typeof GM_registerMenuCommand !== "undefined") {
   });
 }
 
+// === Loader temporário (canto inferior esquerdo) ===
+function mostrarLoaderExtensao() {
+  const existing = document.getElementById("exbr-loader");
+  if (existing) existing.remove();
+
+  const div = document.createElement("div");
+  div.id = "exbr-loader";
+  div.innerHTML = `
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div class="loader" style="
+        width:14px; height:14px; border:2px solid #999; border-top:2px solid #4dabf7;
+        border-radius:50%; animation: spin 1s linear infinite;
+      "></div>
+      <span style="font-size:13px; color:#ccc;">Carregando extensão...</span>
+    </div>
+  `;
+
+  Object.assign(div.style, {
+    position: "fixed",
+    bottom: "20px",
+    left: "20px",
+    padding: "10px 14px",
+    background: "rgba(25,25,25,0.95)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "10px",
+    fontFamily: "Segoe UI, Arial, sans-serif",
+    zIndex: "2147483647",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.5)",
+    opacity: "0",
+    transform: "translateY(8px)",
+    transition: "opacity .3s ease, transform .3s ease",
+  });
+
+  document.body.appendChild(div);
+
+  // Animação aparecer
+  requestAnimationFrame(() => {
+    div.style.opacity = "1";
+    div.style.transform = "translateY(0)";
+  });
+
+  // CSS keyframes
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  return div;
+}
+
 // === Toast flutuante (versão estilizada) ===
 function mostrarToastInstrucao() {
+  // Remove loader antes de mostrar o toast
+  const loader = document.getElementById("exbr-loader");
+  if (loader) loader.remove();
+
   const existing = document.getElementById("exbr-toast");
   if (existing) existing.remove();
 
@@ -81,7 +145,6 @@ function mostrarToastInstrucao() {
       </div>
     `;
 
-  // Estilo container
   Object.assign(div.style, {
     position: "fixed",
     bottom: "20px",
@@ -164,26 +227,29 @@ function mostrarToastInstrucao() {
     clearTimeout(timer);
   }
 
-  // Mouse events → pausa e retoma o timer
   div.addEventListener("mouseenter", stopTimer);
   div.addEventListener("mouseleave", startTimer);
 
-  // Inicia o timer
   startTimer();
 
   function hide() {
     stopTimer();
     div.style.opacity = "0";
     div.style.transform = "translateY(8px)";
-    setTimeout(() => div.remove(), 300);
+    setTimeout(() => div.remove(), 2000);
   }
 }
 
-// Mostrar toast no carregamento inicial, mas só depois do Cloudflare
+// Mostrar loader → depois substitui pelo toast
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
+    mostrarLoaderExtensao();
+    numeroMonitores
+      .then((module) => module.relatoriosAceitosMonitores())
+      .catch(console.error);
     waitForCloudflareClear(mostrarToastInstrucao);
   });
 } else {
+  mostrarLoaderExtensao();
   waitForCloudflareClear(mostrarToastInstrucao);
 }
