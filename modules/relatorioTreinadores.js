@@ -84,15 +84,18 @@ async function buscarRelatoriosPorTreinadorId(treinadorId) {
           </button>
         </h3>
         <div id="radix-${index}" class="pb-4 pt-0 relative space-y-2" hidden>
-          <div>
-            <p style="display: flex; justify-content: space-between;">
+          <div style="display: flex; flex-direction: column;">
+
               <span class="text-sm text-muted-foreground">Responsável: ${
                 relatorio.responsible?.nickname || "Desconhecido"
               }</span>
               <span class="text-sm text-muted-foreground">Treinador: ${
                 relatorio.handler?.nickname || "Desconhecido"
               }</span>
-            </p>
+              <span class="text-sm text-muted-foreground">Auxiliar: ${
+                relatorio.secondary?.nickname || "Desconhecido"
+              }</span>
+
           </div>
           <div>
             <p class="text-sm text-muted-foreground">Data de criação: ${
@@ -109,7 +112,8 @@ async function buscarRelatoriosPorTreinadorId(treinadorId) {
                 : "N/A"
             }</p>
           </div>
-          <p class="text-sm text-muted-foreground">Treinados: ${
+
+          <p class="text-sm text-muted-foreground" style="margin-top: 0px;">Treinados: ${
             relatorio.students?.join(", ") || "N/A"
           }</p>
 

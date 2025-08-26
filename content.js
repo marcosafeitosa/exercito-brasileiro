@@ -1,4 +1,23 @@
-// === Detectar se Cloudflare está verificando ===
+const monitoresExtendido = document.querySelector(
+  "body > div.relative.min-h-screen.lg\\:flex > section > div > div.flex.items-center.gap-3 > button"
+);
+
+monitoresExtendido.addEventListener("click", () => {
+  const valorDiv = document.querySelector(
+    "body > div.relative.min-h-screen.lg\\:flex > div"
+  );
+
+  const botaoMonitoresExtendido = document.querySelector(
+    "#radix-\\:R1cumkq\\: > nav > ul > li:nth-child(4) > div.hidden"
+  );
+
+  if (valorDiv.hasAttribute("data-state", "open")) {
+    botaoMonitoresExtendido.style.display = "flex";
+    botaoMonitoresExtendido.style.justifyContent = "flex-start";
+  } else {
+    botaoMonitoresExtendido.style.justifyContent = "center";
+  }
+});
 
 const numeroMonitores = import("./modules/navegacao.js");
 
@@ -34,9 +53,6 @@ document.addEventListener("keydown", (e) => {
         .catch((err) => {
           console.error("Falha ao carregar módulo:", err);
         });
-      // numeroMonitores
-      //   .then((module) => module.inserirBadgeNavegacao())
-      //   .catch(console.error);
     });
   }
 });
@@ -113,6 +129,7 @@ function mostrarToastInstrucao() {
   numeroMonitores
     .then((module) => module.inserirBadgeNavegacao())
     .catch(console.error);
+
   const div = document.createElement("div");
   div.id = "exbr-toast";
   div.innerHTML = `
