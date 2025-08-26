@@ -34,6 +34,7 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
         height: `${anchor.offsetHeight}px`,
         minWidth: "80px",
         cursor: "pointer",
+        transition: "background-color 0.25s ease", // suaviza a animação
       });
 
       const icon = document.createElement("img");
@@ -61,6 +62,15 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
       divInfo.appendChild(separator);
       divInfo.appendChild(textContainer);
 
+      // efeito de hover (mais claro ao entrar, escuro ao sair)
+      divInfo.addEventListener("mouseenter", () => {
+        divInfo.style.backgroundColor = "#27272A"; // mais claro
+      });
+
+      divInfo.addEventListener("mouseleave", () => {
+        divInfo.style.backgroundColor = "#080809"; // volta ao original
+      });
+
       anchor.parentElement.style.position = "relative";
       anchor.parentElement.appendChild(divInfo);
     }
@@ -82,6 +92,8 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
       const displayValor = valor > 100 ? "99+" : valor;
 
       textContainer.textContent = `Pendentes: ${displayValor}`;
+      textContainer.style.position = "relative";
+      textContainer.style.top = "1px";
 
       divInfo.style.top = `${
         anchor.offsetTop + (anchor.offsetHeight / 2 - divInfo.offsetHeight / 2)
@@ -112,11 +124,10 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
       };
 
       divInfo.onmousemove = (e) => {
-        const offset = 12; // distância do mouse
+        const offset = 12;
         let top = e.clientY + offset;
         let left = e.clientX + offset;
 
-        // evitar que saia da tela
         const tooltipRect = tooltip.getBoundingClientRect();
         if (left + tooltipRect.width > window.innerWidth) {
           left = e.clientX - tooltipRect.width - offset;
