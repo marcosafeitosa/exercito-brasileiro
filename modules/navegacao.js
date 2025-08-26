@@ -11,117 +11,142 @@ const HEADERS = {
 };
 
 export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
-  // Criação do badge
-  function criarBadge(valorBadge) {
-    const badge = document.createElement("span");
-    badge.id = "exbr-badge";
+  const anchorSelector =
+    "body > div > section > div > div.flex.items-center.gap-4 > button.inline-flex.items-center.justify-center.whitespace-nowrap.font-medium.transition-colors.focus-visible\\:outline-none.focus-visible\\:ring-1.focus-visible\\:ring-ring.disabled\\:pointer-events-none.disabled\\:opacity-50.border.border-input.bg-background.shadow-sm.hover\\:bg-accent.hover\\:text-accent-foreground.h-8.rounded-md.px-3.text-xs";
 
-    badge.textContent = valorBadge > 100 ? "99+" : valorBadge;
-    const rightPos = valorBadge > 9 ? "11px" : "12px";
+  function criarDivInfo(anchor) {
+    let divInfo = document.getElementById("exbr-div-info");
+    if (!divInfo) {
+      divInfo = document.createElement("div");
+      divInfo.id = "exbr-div-info";
 
-    Object.assign(badge.style, {
-      color: "white",
-      position: "absolute",
-      right: rightPos,
-    });
-
-    return badge;
-  }
-
-  // Tooltip suspenso no body
-  function adicionarTooltip() {
-    const target = document.querySelector(
-      "#radix-\\:R1cumkq\\: > nav > ul > li:nth-child(4) > div.hidden.lg\\:block"
-    );
-    if (!target) return;
-
-    let tooltip = document.getElementById("exbr-tooltip");
-    if (!tooltip) {
-      tooltip = document.createElement("div");
-      tooltip.id = "exbr-tooltip";
-
-      Object.assign(tooltip.style, {
-        width: "189.492px",
-        position: "fixed",
-        padding: "4px 8px",
-        backgroundColor: " #080809",
+      Object.assign(divInfo.style, {
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
+        position: "absolute",
+        padding: "0px 9px",
+        backgroundColor: "#080809",
         color: "#fff",
-        border: "solid 1px rgb(39, 39, 39)",
-        fontSize: "12px",
-        borderRadius: "3px",
-        opacity: "0",
-        pointerEvents: "none",
-        transition: "opacity 0.2s ease",
+        border: "1px solid rgb(39,39,39)",
+        fontSize: ".75rem",
+        borderRadius: "5px",
+        height: `${anchor.offsetHeight}px`,
+        minWidth: "80px",
+        cursor: "pointer",
+      });
+
+      const icon = document.createElement("img");
+      icon.src =
+        "https://www.habbo.com.br/habbo-imaging/badge/b10114s36044s40114s43114s17014328b05c552e870a455a7f2be1f8ad914.gif";
+      Object.assign(icon.style, {
+        width: "14px",
+        height: "14px",
+      });
+
+      const separator = document.createElement("div");
+      separator.textContent = "|";
+      Object.assign(separator.style, {
+        color: "rgb(120,120,120)",
+        fontWeight: "bold",
+      });
+
+      const textContainer = document.createElement("div");
+      textContainer.id = "exbr-div-text";
+      Object.assign(textContainer.style, {
         whiteSpace: "nowrap",
-        zIndex: "10000",
       });
 
-      document.body.appendChild(tooltip);
+      divInfo.appendChild(icon);
+      divInfo.appendChild(separator);
+      divInfo.appendChild(textContainer);
 
-      target.addEventListener("mouseenter", () => {
-        const badge = document.getElementById("exbr-badge");
-        const valor = badge ? badge.textContent : "0";
-        tooltip.textContent = `Ações na Central: ${valor}`;
-
-        // Posiciona tooltip em relação ao target
-        const rect = target.getBoundingClientRect();
-        tooltip.style.top = `${rect.top - 30}px`;
-        tooltip.style.left = `${rect.right + 0}px`;
-        tooltip.style.opacity = "1";
-      });
-
-      target.addEventListener("mouseleave", () => {
-        tooltip.style.opacity = "0";
-      });
+      anchor.parentElement.style.position = "relative";
+      anchor.parentElement.appendChild(divInfo);
     }
+    return divInfo;
   }
 
-  // Atualiza badge
-  async function atualizarBadge() {
-    const target = document.querySelector(
-      "#radix-\\:R1cumkq\\: > nav > ul > li:nth-child(4) > div.hidden.lg\\:block"
-    );
-    if (!target) return;
+  async function atualizarDivInfo() {
+    const anchor = document.querySelector(anchorSelector);
+    if (!anchor) return;
 
-    target.style.display = "flex";
-    target.style.justifyContent = "center";
+    const divInfo = criarDivInfo(anchor);
+    const textContainer = divInfo.querySelector("#exbr-div-text");
 
     try {
       const res = await fetch(API_URL, { headers: HEADERS });
       const data = await res.json();
+
       const valor = data.length || 0;
       const displayValor = valor > 100 ? "99+" : valor;
 
-      let badge = document.getElementById("exbr-badge");
-      if (!badge) {
-        badge = criarBadge(valor);
-        target.appendChild(badge);
-      } else {
-        badge.textContent = displayValor;
-        badge.style.right = valor > 9 ? "10px" : "18px";
+      textContainer.textContent = `Pendentes: ${displayValor}`;
+
+      divInfo.style.top = `${
+        anchor.offsetTop + (anchor.offsetHeight / 2 - divInfo.offsetHeight / 2)
+      }px`;
+      divInfo.style.left = `${anchor.offsetLeft - 120}px`;
+
+      // === Tooltip ===
+      let tooltip = document.getElementById("exbr-tooltip");
+      if (!tooltip) {
+        tooltip = document.createElement("div");
+        tooltip.id = "exbr-tooltip";
+        tooltip.style.position = "fixed";
+        tooltip.style.background = "#111";
+        tooltip.style.color = "#fff";
+        tooltip.style.padding = "4px 8px";
+        tooltip.style.fontSize = "12px";
+        tooltip.style.borderRadius = "4px";
+        tooltip.style.boxShadow = "0 2px 6px rgba(0,0,0,0.4)";
+        tooltip.style.whiteSpace = "nowrap";
+        tooltip.style.zIndex = "9999";
+        tooltip.style.display = "none";
+        document.body.appendChild(tooltip);
       }
 
-      // Chama o tooltip
-      setTimeout(() => {
-        adicionarTooltip();
-      }, 600);
+      divInfo.onmouseenter = (e) => {
+        tooltip.textContent = `${valor} ações não aceitas na central`;
+        tooltip.style.display = "block";
+      };
+
+      divInfo.onmousemove = (e) => {
+        const offset = 12; // distância do mouse
+        let top = e.clientY + offset;
+        let left = e.clientX + offset;
+
+        // evitar que saia da tela
+        const tooltipRect = tooltip.getBoundingClientRect();
+        if (left + tooltipRect.width > window.innerWidth) {
+          left = e.clientX - tooltipRect.width - offset;
+        }
+        if (top + tooltipRect.height > window.innerHeight) {
+          top = e.clientY - tooltipRect.height - offset;
+        }
+
+        tooltip.style.top = top + "px";
+        tooltip.style.left = left + "px";
+      };
+
+      divInfo.onmouseleave = () => {
+        tooltip.style.display = "none";
+      };
+
+      divInfo.onclick = () => {
+        window.location.href =
+          "https://ofc.exbrhabbo.com/externos/e34ee431-8e67-456d-8216-fce1b8a9a60b/central";
+      };
     } catch (err) {
       console.error("Erro ao buscar dados:", err);
     }
   }
 
-  // Observa botão de ancoragem
-  const anchorSelector =
-    "body > div > section > div > div.flex.items-center.gap-4 > button.inline-flex.items-center.justify-center.whitespace-nowrap.font-medium.transition-colors.focus-visible\\:outline-none.focus-visible\\:ring-1.focus-visible\\:ring-ring.disabled\\:pointer-events-none.disabled\\:opacity-50.border.border-input.bg-background.shadow-sm.hover\\:bg-accent.hover\\:text-accent-foreground.h-8.rounded-md.px-3.text-xs";
-
   function observarAnchor() {
     const anchor = document.querySelector(anchorSelector);
     if (anchor) {
-      atualizarBadge();
-
-      // Atualizações periódicas
-      setInterval(atualizarBadge, atualizacaoInterval);
-
+      atualizarDivInfo();
+      setInterval(atualizarDivInfo, atualizacaoInterval);
       observer.disconnect();
     }
   }
@@ -129,6 +154,5 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
   const observer = new MutationObserver(observarAnchor);
   observer.observe(document.body, { childList: true, subtree: true });
 
-  // Tentativa inicial
   observarAnchor();
 }
