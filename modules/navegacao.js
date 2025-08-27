@@ -15,6 +15,8 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
     "body > div > section > div > div.flex.items-center.gap-4 > button.inline-flex.items-center.justify-center.whitespace-nowrap.font-medium.transition-colors.focus-visible\\:outline-none.focus-visible\\:ring-1.focus-visible\\:ring-ring.disabled\\:pointer-events-none.disabled\\:opacity-50.border.border-input.bg-background.shadow-sm.hover\\:bg-accent.hover\\:text-accent-foreground.h-8.rounded-md.px-3.text-xs";
 
   function criarDivInfo(anchor) {
+    if (!anchor) return null; // proteção extra
+
     let divInfo = document.getElementById("exbr-div-info");
     if (!divInfo) {
       divInfo = document.createElement("div");
@@ -34,7 +36,7 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
         height: `${anchor.offsetHeight}px`,
         minWidth: "80px",
         cursor: "pointer",
-        transition: "background-color 0.25s ease", // suaviza a animação
+        transition: "background-color 0.25s ease",
       });
 
       const icon = document.createElement("img");
@@ -62,26 +64,29 @@ export function inserirBadgeNavegacao(atualizacaoInterval = 60000) {
       divInfo.appendChild(separator);
       divInfo.appendChild(textContainer);
 
-      // efeito de hover (mais claro ao entrar, escuro ao sair)
       divInfo.addEventListener("mouseenter", () => {
-        divInfo.style.backgroundColor = "#27272A"; // mais claro
+        divInfo.style.backgroundColor = "#27272A";
       });
 
       divInfo.addEventListener("mouseleave", () => {
-        divInfo.style.backgroundColor = "#080809"; // volta ao original
+        divInfo.style.backgroundColor = "#080809";
       });
 
-      anchor.parentElement.style.position = "relative";
-      anchor.parentElement.appendChild(divInfo);
+      if (anchor.parentElement) {
+        anchor.parentElement.style.position = "relative";
+        anchor.parentElement.appendChild(divInfo);
+      }
     }
     return divInfo;
   }
 
   async function atualizarDivInfo() {
     const anchor = document.querySelector(anchorSelector);
-    if (!anchor) return;
+    if (!anchor) return; // não faz nada se o botão não estiver na tela
 
     const divInfo = criarDivInfo(anchor);
+    if (!divInfo) return;
+
     const textContainer = divInfo.querySelector("#exbr-div-text");
 
     try {
