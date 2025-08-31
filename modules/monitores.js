@@ -353,7 +353,7 @@ async function pegarRelatoriosMembro(memberId) {
   const dataFim = new Date(
     hoje.getFullYear(),
     hoje.getMonth(),
-    hoje.getDate(),
+    hoje.getDate() + 1,
     3,
     0,
     0
