@@ -106,6 +106,9 @@ export async function exibirMenuMonitores() {
 
       if (observerLupas) observerLupas.disconnect();
       iniciarObserverLupas();
+
+      // após (re)inserir lupas, garanta a (re)ordenação
+      scheduleInitSorting();
     };
 
     diaSelect.addEventListener("change", () => {
@@ -123,6 +126,7 @@ export async function exibirMenuMonitores() {
     if (lupasJaAtivadas) {
       adicionarLupas();
       iniciarObserverLupas();
+      scheduleInitSorting();
     }
   }
 }
@@ -342,19 +346,19 @@ async function pegarRelatoriosMembro(memberId) {
   const ano = new Date().getFullYear();
   const mes = String(new Date().getMonth() + 1).padStart(2, "0");
 
-  // Data de início: dia selecionado às 03:00 UTC
+  // Data de início: dia selecionado às 04:00 UTC
   const dataInicio = new Date(
-    `${ano}-${mes}-${diaStr.padStart(2, "0")}T03:00:00Z`
+    `${ano}-${mes}-${diaStr.padStart(2, "0")}T04:00:00Z`
   );
   const dataInicioStr = dataInicio.toISOString();
 
-  // Data de fim: hoje às 03:00 UTC
+  // Data de fim: hoje às 02:00 UTC do dia seguinte
   const hoje = new Date();
   const dataFim = new Date(
     hoje.getFullYear(),
     hoje.getMonth(),
     hoje.getDate() + 1,
-    3,
+    2,
     0,
     0
   );
@@ -400,6 +404,9 @@ function gerarHtmlRelatorios(nickname, relPorTipo) {
   html += `</div>`;
   return html;
 }
+
+// ─── ORDENÇÃO ROBUSTA (resistente a SPA/React) ──────────────────────────────
+
 // Ordem desejada dos status
 const statusOrder = {
   Ativo: 0,
@@ -409,34 +416,28 @@ const statusOrder = {
   Verificação: 4,
 };
 
-let debounceTimeout = null;
-const tbody = document.querySelector("tbody");
+// Helpers de inicialização e re-anexo
+let currentTbody = null;
+let rowsObserver = null;
+let tableDomObserver = null;
+let debounceSortHandle = null;
 
-// Declare observer em escopo acessível (fora do if)
-let observer = null;
-
-if (tbody) {
-  observer = new MutationObserver((mutations) => {
-    if (debounceTimeout) clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(() => {
-      sortTableRows();
-    }, 100);
-  });
-
-  observer.observe(tbody, {
-    childList: true,
-    subtree: false,
-  });
-
-  sortTableRows();
+// Seleciona o tbody “alvo”: pega o <tbody> com mais linhas visíveis
+function findTargetTbody() {
+  const candidates = Array.from(document.querySelectorAll("table tbody"));
+  if (candidates.length === 0) return null;
+  candidates.sort(
+    (a, b) => (b.children?.length || 0) - (a.children?.length || 0)
+  );
+  return candidates[0] || null;
 }
 
 function sortTableRows() {
-  if (!tbody || !observer) return;
+  if (!currentTbody) return;
 
-  const rows = Array.from(tbody.querySelectorAll("tr"));
+  const rows = Array.from(currentTbody.querySelectorAll(":scope > tr"));
+  if (rows.length === 0) return;
 
-  // Ordena as linhas pelo status
   const rowsOrdenadas = [...rows].sort((a, b) => {
     const statusA =
       a.querySelector("td:nth-child(4) div")?.textContent.trim() || "";
@@ -451,23 +452,102 @@ function sortTableRows() {
     return orderA - orderB;
   });
 
-  // Verifica se a ordem mudou
-  let ordemMudou = false;
+  // Evita reflow desnecessário
+  let mudou = false;
   for (let i = 0; i < rows.length; i++) {
     if (rows[i] !== rowsOrdenadas[i]) {
-      ordemMudou = true;
+      mudou = true;
       break;
     }
   }
+  if (!mudou) return;
 
-  if (ordemMudou) {
-    observer.disconnect(); // evita ciclo
-
-    rowsOrdenadas.forEach((row) => tbody.appendChild(row));
-
-    observer.observe(tbody, {
-      childList: true,
-      subtree: false,
-    });
-  }
+  // Reapende na nova ordem
+  const frag = document.createDocumentFragment();
+  rowsOrdenadas.forEach((tr) => frag.appendChild(tr));
+  currentTbody.appendChild(frag);
 }
+
+function attachRowsObserver(tbody) {
+  // limpa anterior
+  if (rowsObserver) {
+    try {
+      rowsObserver.disconnect();
+    } catch {}
+  }
+
+  currentTbody = tbody;
+  if (!currentTbody) return;
+
+  // Observa mudanças nas linhas
+  rowsObserver = new MutationObserver(() => {
+    if (debounceSortHandle) cancelAnimationFrame(debounceSortHandle);
+    debounceSortHandle = requestAnimationFrame(() => {
+      // garante que o React terminou o paint
+      setTimeout(sortTableRows, 0);
+    });
+  });
+
+  rowsObserver.observe(currentTbody, {
+    childList: true,
+    subtree: false,
+  });
+
+  // Ordena já na entrada
+  sortTableRows();
+}
+
+function initSorting() {
+  const tbody = findTargetTbody();
+  if (!tbody) return;
+  if (tbody === currentTbody) {
+    // mesmo tbody; só garante que está ordenado
+    sortTableRows();
+    return;
+  }
+  attachRowsObserver(tbody);
+}
+
+function scheduleInitSorting() {
+  // chama várias vezes com pequenos atrasos para pegar mounts assíncronos
+  setTimeout(initSorting, 0);
+  setTimeout(initSorting, 150);
+  setTimeout(initSorting, 350);
+  requestAnimationFrame(initSorting);
+}
+
+// Observa o DOM inteiro para detectar quando um novo tbody aparecer/substituir
+if (!tableDomObserver) {
+  tableDomObserver = new MutationObserver(() => {
+    scheduleInitSorting();
+  });
+  tableDomObserver.observe(document.body, { childList: true, subtree: true });
+}
+
+// Hook em mudanças de rota da SPA
+(function hookHistory() {
+  const push = history.pushState;
+  const replace = history.replaceState;
+
+  history.pushState = function () {
+    const ret = push.apply(this, arguments);
+    window.dispatchEvent(new Event("locationchange"));
+    return ret;
+  };
+  history.replaceState = function () {
+    const ret = replace.apply(this, arguments);
+    window.dispatchEvent(new Event("locationchange"));
+    return ret;
+  };
+  window.addEventListener("popstate", () =>
+    window.dispatchEvent(new Event("locationchange"))
+  );
+
+  window.addEventListener("locationchange", () => {
+    // aguarda o React montar a nova tela/lista
+    scheduleInitSorting();
+  });
+})();
+
+// Kickstart inicial
+scheduleInitSorting();
